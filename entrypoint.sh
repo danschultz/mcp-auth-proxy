@@ -1,35 +1,36 @@
 #!/bin/bash
 set -euo pipefail
 
-# Process Docker Secret _FILE environment variables
-#
-# For any variable named FOO_FILE=/path/to/file, reads the file and exports
-# FOO=<content>. Trailing newlines are stripped, which is standard for secrets.
-#
-# If both FOO and FOO_FILE are set, FOO takes precedence and FOO_FILE is ignored.
+# Supported _FILE variables for Docker Secrets.
+# For each entry, if FOO_FILE is set, reads the file and exports FOO=<content>.
+# If both FOO and FOO_FILE are set, FOO takes precedence.
+FILE_VARS=(
+    PASSWORD_FILE:PASSWORD
+    GOOGLE_CLIENT_SECRET_FILE:GOOGLE_CLIENT_SECRET
+    GITHUB_CLIENT_SECRET_FILE:GITHUB_CLIENT_SECRET
+    OIDC_CLIENT_SECRET_FILE:OIDC_CLIENT_SECRET
+    PROXY_BEARER_TOKEN_FILE:PROXY_BEARER_TOKEN
+    REPOSITORY_DSN_FILE:REPOSITORY_DSN
+)
 
-for var_name in $(compgen -e); do
-    # Only process variables ending in _FILE
-    [[ "$var_name" == *_FILE ]] || continue
+for entry in "${FILE_VARS[@]}"; do
+    file_var="${entry%%:*}"
+    target="${entry##*:}"
+    file_path="${!file_var:-}"
 
-    file_path="${!var_name}"
     [[ -z "$file_path" ]] && continue
 
-    target="${var_name%_FILE}"
-
-    # Skip if the target variable is already set
     if [[ -n "${!target:-}" ]]; then
-        echo >&2 "[entrypoint] ${target} already set; ignoring ${var_name}"
+        echo >&2 "[entrypoint] ${target} already set; ignoring ${file_var}"
         continue
     fi
 
     if [[ -f "$file_path" ]]; then
-        # $(< ...) strips trailing newlines, which is desirable for secrets
         export "${target}=$(< "$file_path")"
-        unset "$var_name"
+        unset "$file_var"
         echo >&2 "[entrypoint] Loaded Docker Secret: ${target}"
     else
-        echo >&2 "[entrypoint] Warning: Secret file not found: ${file_path} (for ${var_name})"
+        echo >&2 "[entrypoint] Warning: Secret file not found: ${file_path} (for ${file_var})"
     fi
 done
 
