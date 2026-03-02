@@ -34,4 +34,4 @@ for entry in "${FILE_VARS[@]}"; do
     fi
 done
 
-exec "$@"
+exec /usr/local/bin/mcp-auth-proxy "$@"
