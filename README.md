@@ -53,32 +53,18 @@ docker run \
 
 ## Supported `_FILE` Variables
 
-Any environment variable accepted by mcp-auth-proxy can use the `_FILE` convention. Common examples:
-
 | `_FILE` Variable | Populates | Description |
 |---|---|---|
-| `EXTERNAL_URL_FILE` | `EXTERNAL_URL` | External URL for the proxy |
-| `PASSWORD_FILE` | `PASSWORD` | Plain text password |
-| `PASSWORD_HASH_FILE` | `PASSWORD_HASH` | Bcrypt hash of password |
-| `GOOGLE_CLIENT_ID_FILE` | `GOOGLE_CLIENT_ID` | Google OAuth client ID |
+| `PASSWORD_FILE` | `PASSWORD` | Password for password-based auth |
 | `GOOGLE_CLIENT_SECRET_FILE` | `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
-| `GOOGLE_ALLOWED_USERS_FILE` | `GOOGLE_ALLOWED_USERS` | Comma-separated allowed emails |
-| `GOOGLE_ALLOWED_WORKSPACES_FILE` | `GOOGLE_ALLOWED_WORKSPACES` | Comma-separated allowed workspaces |
-| `GITHUB_CLIENT_ID_FILE` | `GITHUB_CLIENT_ID` | GitHub OAuth client ID |
 | `GITHUB_CLIENT_SECRET_FILE` | `GITHUB_CLIENT_SECRET` | GitHub OAuth client secret |
-| `GITHUB_ALLOWED_USERS_FILE` | `GITHUB_ALLOWED_USERS` | Comma-separated allowed GitHub usernames |
-| `GITHUB_ALLOWED_ORGS_FILE` | `GITHUB_ALLOWED_ORGS` | Comma-separated allowed GitHub orgs/teams |
-| `OIDC_CONFIGURATION_URL_FILE` | `OIDC_CONFIGURATION_URL` | OIDC configuration endpoint URL |
-| `OIDC_CLIENT_ID_FILE` | `OIDC_CLIENT_ID` | OIDC client ID |
 | `OIDC_CLIENT_SECRET_FILE` | `OIDC_CLIENT_SECRET` | OIDC client secret |
-| `OIDC_ALLOWED_USERS_FILE` | `OIDC_ALLOWED_USERS` | Exact match user list |
-| `OIDC_ALLOWED_USERS_GLOB_FILE` | `OIDC_ALLOWED_USERS_GLOB` | Glob pattern user list |
 | `PROXY_BEARER_TOKEN_FILE` | `PROXY_BEARER_TOKEN` | Bearer token for proxied requests |
-| `REPOSITORY_DSN_FILE` | `REPOSITORY_DSN` | Database connection string |
-
-For the full list of environment variables, see the [upstream configuration docs](https://sigbit.github.io/mcp-auth-proxy/docs/configuration).
+| `REPOSITORY_DSN_FILE` | `REPOSITORY_DSN` | Database connection string (may contain credentials) |
 
 **Precedence:** If both `FOO` and `FOO_FILE` are set, `FOO` takes precedence and `FOO_FILE` is ignored.
+
+All other configuration is set via environment variables directly. See the [upstream configuration docs](https://sigbit.github.io/mcp-auth-proxy/docs/configuration) for the full list.
 
 ## Building Locally
 
